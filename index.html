@@ -3,58 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seguimiento de Aliados - Bitácora Pro</title>
+    <title>Seguimiento de Aliados</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .ally-card { background: white; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .ally-card:hover { transform: scale(1.01); }
-        .timeline-item { flex: 1; text-align: center; padding: 10px 4px; border-radius: 8px; font-size: 0.65rem; border: 1px solid transparent; }
-        .status-done { background-color: #dcfce7; color: #15803d; border-color: #86efac; }
-        .status-active { background-color: #dbeafe; color: #1e40af; border-color: #93c5fd; font-weight: 700; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
-        .status-pending { background-color: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
-        .note-bubble { background: #fdfdfd; border-left: 4px solid #3b82f6; padding: 10px; margin-top: 8px; font-size: 0.75rem; border-radius: 4px; box-shadow: inset 0 0 5px rgba(0,0,0,0.02); }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .ally-card { background: white; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .status-done { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .status-active { background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; font-weight: 700; }
+        .note-bubble { background: #fdfdfd; border-left: 4px solid #3b82f6; padding: 8px; margin-top: 5px; font-size: 0.75rem; }
     </style>
 </head>
 <body class="p-4 md:p-10 max-w-2xl mx-auto">
-
     <header class="mb-8 text-center">
-        <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight">🤝 Captación de Aliados</h1>
-        <p class="text-sm text-slate-500 mt-2 italic font-medium">Control y seguimiento del proceso de prospección</p>
+        <h1 class="text-3xl font-bold text-slate-800">🤝 Gestión de Aliados</h1>
+        <button onclick="exportarExcel()" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-green-700 transition">📥 Descargar Excel (CSV)</button>
     </header>
 
-    <button onclick="exportarExcel()" class="w-full mb-8 bg-green-600 text-white font-bold py-3 rounded-2xl hover:bg-green-700 transition flex items-center justify-center gap-2 shadow-lg">
-        📥 Descargar Respaldo Excel (CSV)
-    </button>
-
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 mb-10 shadow-sm">
-        <h2 class="text-xl font-bold text-blue-700 mb-5 flex items-center gap-2">
-            <span class="bg-blue-100 p-2 rounded-lg">➕</span> Nuevo Prospecto
-        </h2>
+    <div class="bg-white p-6 rounded-2xl border mb-10 shadow-sm">
         <form id="ally-form" class="space-y-4">
-            <input type="text" id="name" placeholder="Institución / Empresa" class="w-full p-4 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 bg-slate-50" required>
+            <input type="text" id="name" placeholder="Institución / Empresa" class="w-full p-3 border rounded-xl bg-slate-50" required>
             <div class="grid grid-cols-2 gap-4">
-                <select id="method" class="p-4 border rounded-2xl bg-slate-50 outline-none">
-                    <option value="Visita/Carta">Visita/Carta</option>
-                    <option value="Correo">Correo</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                    <option value="Llamada">Llamada</option>
-                </select>
-                <input type="text" id="sector" placeholder="Giro / Sector" class="p-4 border rounded-2xl bg-slate-50 outline-none focus:ring-2 focus:ring-blue-400">
+                <select id="method" class="p-3 border rounded-xl bg-slate-50"><option>Visita/Carta</option><option>WhatsApp</option><option>Correo</option><option>Llamada</option></select>
+                <input type="text" id="sector" placeholder="Giro" class="p-3 border rounded-xl bg-slate-50">
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition text-lg shadow-md">
-                Iniciar Invitación
-            </button>
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg">Registrar Invitación</button>
         </form>
     </div>
 
-    <div id="ally-list" class="space-y-8">
-        </div>
+    <div id="ally-list" class="space-y-6"></div>
 
     <script>
+        let allies = JSON.parse(localStorage.getItem('aliados_data_v2')) || [];
         const STEPS = ['Invitación', 'Seguimiento', 'Cierre'];
-        let allies = JSON.parse(localStorage.getItem('aliados_final_v1')) || [];
 
         document.getElementById('ally-form').onsubmit = (e) => {
             e.preventDefault();
@@ -63,22 +43,21 @@
                 name: document.getElementById('name').value,
                 method: document.getElementById('method').value,
                 sector: document.getElementById('sector').value,
-                currentStatus: 'Invitación',
+                status: 'Invitación',
                 history: { 'Invitación': new Date().toLocaleString() },
-                notes: [],
-                finalResult: null
+                notes: []
             };
-            allies.unshift(newAlly); // Nuevo arriba
+            allies.unshift(newAlly);
             save();
             e.target.reset();
         };
 
         function addNote(id) {
-            const txt = prompt("📝 ¿Qué sucedió en este seguimiento?");
+            const txt = prompt("📝 Nota de seguimiento:");
             if (txt) {
                 const a = allies.find(x => x.id === id);
                 a.notes.push({ date: new Date().toLocaleString(), text: txt });
-                a.currentStatus = 'Seguimiento';
+                a.status = 'Seguimiento';
                 if (!a.history['Seguimiento']) a.history['Seguimiento'] = new Date().toLocaleString();
                 save();
             }
@@ -86,95 +65,50 @@
 
         function finalize(id) {
             const a = allies.find(x => x.id === id);
-            const success = confirm("¿El trato fue EXITOSO?");
-            a.finalResult = {
-                success: success,
-                detail: success ? prompt("🔗 Enlace de acuerdos (Drive/Dropbox):") : prompt("⚠️ Motivo de la dificultad:"),
-                charla: success ? (confirm("¿Requiere Charla?") ? 'Sí' : 'No') : 'N/A'
-            };
-            a.currentStatus = 'Cierre';
+            const success = confirm("¿Se logró la alianza?");
+            a.result = { success, detail: success ? prompt("Enlace Drive:") : prompt("Motivo rechazo:") };
+            a.status = 'Cierre';
             a.history['Cierre'] = new Date().toLocaleString();
             save();
         }
 
         function exportarExcel() {
-            if (allies.length === 0) return alert("No hay datos");
-            let csv = "\uFEFFNombre,Giro,Medio,Estado,Invitacion,Seguimiento,Cierre,Resultado,Detalle\n";
+            let csv = "\uFEFFNombre,Giro,Estado,Resultado\n";
             allies.forEach(a => {
-                const res = a.finalResult ? (a.finalResult.success ? 'ALIADO NUEVO' : 'RECHAZADO') : 'EN PROCESO';
-                const det = a.finalResult ? a.finalResult.detail : '';
-                csv += `"${a.name}","${a.sector}","${a.method}","${a.currentStatus}","${a.history['Invitación'] || ''}","${a.history['Seguimiento'] || ''}","${a.history['Cierre'] || ''}","${res}","${det}"\n`;
+                csv += `"${a.name}","${a.sector}","${a.status}","${a.result ? (a.result.success ? 'Aliado' : 'Rechazado') : 'Proceso'}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Respaldo_Aliados_${new Date().toLocaleDateString()}.csv`;
+            link.download = "Reporte_Aliados.csv";
             link.click();
         }
 
         function save() {
-            localStorage.setItem('aliados_final_v1', JSON.stringify(allies));
+            localStorage.setItem('aliados_data_v2', JSON.stringify(allies));
             render();
         }
 
         function render() {
             const container = document.getElementById('ally-list');
-            container.innerHTML = '<h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">📋 Historial de Prospección</h2>';
-
+            container.innerHTML = '';
             allies.forEach(a => {
-                const isFinal = a.currentStatus === 'Cierre';
                 container.innerHTML += `
-                    <div class="ally-card p-6 mb-6">
-                        <div class="flex justify-between items-start mb-5">
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800">${a.name}</h3>
-                                <p class="text-xs text-slate-400 font-semibold uppercase mt-1 tracking-wider">${a.sector} • via ${a.method}</p>
-                            </div>
-                            <span class="text-[10px] font-bold px-3 py-1 rounded-full ${a.finalResult?.success ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-blue-100 text-blue-700 border border-blue-200'} uppercase">
-                                ${a.currentStatus}
-                            </span>
+                    <div class="ally-card p-5 mb-4">
+                        <div class="flex justify-between mb-4">
+                            <h3 class="font-bold text-lg">${a.name}</h3>
+                            <span class="text-[10px] p-1 rounded bg-blue-100">${a.status}</span>
                         </div>
-
-                        <div class="flex gap-2 mb-6">
-                            ${STEPS.map(s => {
-                                let style = a.history[s] ? "status-done" : (a.currentStatus === s ? "status-active" : "status-pending");
-                                return `
-                                    <div class="timeline-item ${style}">
-                                        <div class="font-bold uppercase tracking-tighter">${s}</div>
-                                        <div class="text-[9px] mt-1 opacity-80">${a.history[s] ? a.history[s].split(' ')[0] : '--/--/--'}</div>
-                                    </div>`;
-                            }).join('')}
+                        <div class="bg-slate-50 p-3 rounded-lg text-xs mb-4">
+                            <b>Bitácora:</b>
+                            ${a.notes.map(n => `<div class="note-bubble"><b>${n.date.split(',')[0]}:</b> ${n.text}</div>`).join('') || '<p>Sin notas.</p>'}
                         </div>
-
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-5 max-h-48 overflow-y-auto">
-                            <p class="text-[10px] font-extrabold text-slate-400 uppercase mb-3">🕒 Bitácora de Actividad:</p>
-                            ${a.notes.length ? a.notes.map(n => `
-                                <div class="note-bubble">
-                                    <span class="text-blue-600 font-bold block text-[10px]">${n.date}</span>
-                                    ${n.text}
-                                </div>`).join('') : '<p class="text-xs italic text-slate-400">Sin seguimientos registrados aún.</p>'}
-                        </div>
-
-                        ${isFinal ? `
-                            <div class="p-4 rounded-2xl border ${a.finalResult.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} shadow-inner">
-                                <p class="text-sm">
-                                    ${a.finalResult.success ? 
-                                        `<b>🌟 ALIADO NUEVO</b><br><span class="text-xs">Charla: ${a.finalResult.charla}</span><br><a href="${a.finalResult.detail}" target="_blank" class="text-blue-600 underline font-bold mt-2 inline-block">🔗 Ver Acuerdos Compartidos</a>` : 
-                                        `<b>⚠️ NO CONCRETADO</b><br><span class="text-xs">Motivo: ${a.finalResult.detail}</span>`}
-                                </p>
-                            </div>
-                        ` : `
-                            <div class="grid grid-cols-2 gap-3">
-                                <button onclick="addNote(${a.id})" class="border-2 border-blue-600 text-blue-600 font-bold py-3 rounded-xl text-sm hover:bg-blue-50 transition">
-                                    📝 Seguimiento
-                                </button>
-                                <button onclick="finalize(${a.id})" class="bg-slate-800 text-white font-bold py-3 rounded-xl text-sm hover:bg-slate-900 transition">
-                                    🏁 Finalizar
-                                </button>
-                            </div>
-                        `}
-                    </div>
-                `;
+                        ${a.status !== 'Cierre' ? `
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="addNote(${a.id})" class="border-2 border-blue-600 text-blue-600 py-2 rounded-lg text-xs font-bold">Seguimiento</button>
+                                <button onclick="finalize(${a.id})" class="bg-slate-800 text-white py-2 rounded-lg text-xs font-bold">Finalizar</button>
+                            </div>` : `<div class="p-2 bg-gray-100 rounded text-xs font-bold text-center">${a.result.success ? '✅ Aliado Confirmado' : '❌ No sumado'}</div>`}
+                    </div>`;
             });
         }
         render();
