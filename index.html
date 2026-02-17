@@ -3,142 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primer Contacto - Control Ejecutivo</title>
+    <title>Pipeline Ejecutivo - Puebla Comparte</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        .executive-card { background: white; border-radius: 1.25rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #e2e8f0; }
-        .card-alert { border: 2px solid #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0% { border-color: #ef4444; } 50% { border-color: #fca5a5; } 100% { border-color: #ef4444; } }
-        .btn-gradient { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card-prospect { background: white; border-radius: 1.5rem; transition: all 0.3s; border: 1px solid #e2e8f0; position: relative; overflow: hidden; }
+        .alert-warm { border-left: 8px solid #f59e0b; background: #fffcf5; } /* Naranja 3-5 días */
+        .alert-critical { border-left: 8px solid #ef4444; background: #fff5f5; animation: pulse-border 2s infinite; } /* Rojo +5 días */
+        @keyframes pulse-border { 0%, 100% { border-left-color: #ef4444; } 50% { border-left-color: #fca5a5; } }
+        .status-badge { font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 50px; text-transform: uppercase; }
     </style>
 </head>
-<body class="p-4 md:p-8 max-w-xl mx-auto">
+<body class="p-4 md:p-8 max-w-2xl mx-auto">
 
-    <header class="mb-10 flex justify-between items-end">
+    <header class="mb-8 flex justify-between items-center">
         <div>
-            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Primer Contacto</h1>
-            <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest">Panel de Prospección Ejecutiva</p>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Pipeline Pro</h1>
+            <p class="text-indigo-600 font-bold text-[10px] uppercase tracking-[0.2em]">Gestión de Alianzas Estratégicas</p>
         </div>
-        <div class="text-right">
-            <span id="counter" class="text-2xl font-black text-slate-300">00</span>
-            <p class="text-[10px] font-bold text-slate-400 uppercase">Prospectos</p>
+        <div class="bg-indigo-600 text-white p-3 rounded-2xl shadow-lg shadow-indigo-200">
+            <span id="main-counter" class="text-xl font-black">0</span>
         </div>
     </header>
 
-    <div class="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 mb-10 border border-white">
-        <form id="contact-form" class="space-y-4">
-            <input type="text" id="inst" placeholder="Institución / Empresa" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-slate-700" required>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <input type="text" id="rep" placeholder="Responsable" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm" required>
-                <input type="tel" id="tel" placeholder="Teléfono" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm" required>
+    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 mb-10">
+        <form id="prospect-form" class="space-y-4">
+            <input type="text" id="inst" placeholder="Institución / Empresa" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 font-bold" required>
+            <div class="grid grid-cols-2 gap-3">
+                <input type="text" id="rep" placeholder="Representante" class="p-4 bg-slate-50 border-none rounded-2xl outline-none text-sm">
+                <input type="tel" id="tel" placeholder="WhatsApp / Tel" class="p-4 bg-slate-50 border-none rounded-2xl outline-none text-sm">
             </div>
-
-            <select id="interes" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none font-bold text-slate-600 text-sm">
-                <option value="Alto">Prioridad: Alta 🔥</option>
-                <option value="Medio" selected>Prioridad: Media ⚡</option>
-                <option value="Bajo">Prioridad: Baja ❄️</option>
-            </select>
-
-            <textarea id="notas" placeholder="Acuerdos clave y próximos pasos..." class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none h-24 text-sm"></textarea>
-
-            <button type="submit" class="w-full btn-gradient text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition">
-                Registrar en Pipeline
-            </button>
+            <textarea id="resena" placeholder="Reseña inicial (¿Cómo se consiguió el contacto?)" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none h-20 text-sm"></textarea>
+            <button type="submit" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-indigo-600 transition-all shadow-xl">INICIAR PROSPECCIÓN</button>
         </form>
     </div>
 
-    <div id="list-container" class="space-y-6">
-        <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Pipeline Activo</h2>
-    </div>
+    <div id="pipeline-list" class="space-y-6 text-slate-800">
+        </div>
 
     <script>
-        let prospectos = JSON.parse(localStorage.getItem('puebla_ejecutivo_v1')) || [];
+        const STAGES = ["Primer Contacto", "Primera Reunión", "Visita"];
+        let db = JSON.parse(localStorage.getItem('puebla_pipeline_v2')) || [];
 
-        document.getElementById('contact-form').onsubmit = (e) => {
+        document.getElementById('prospect-form').onsubmit = (e) => {
             e.preventDefault();
             const nuevo = {
                 id: Date.now(),
-                fecha_timestamp: Date.now(), // Para calcular la alerta
                 inst: document.getElementById('inst').value,
                 rep: document.getElementById('rep').value,
                 tel: document.getElementById('tel').value,
-                interes: document.getElementById('interes').value,
-                notas: document.getElementById('notas').value
+                stage: STAGES[0],
+                lastUpdate: Date.now(),
+                history: [document.getElementById('resena').value || "Contacto registrado."]
             };
-            prospectos.unshift(nuevo);
+            db.unshift(nuevo);
             save();
             e.target.reset();
         };
 
-        function calculateDays(timestamp) {
-            const diff = Date.now() - timestamp;
-            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        function upgrade(id) {
+            const p = db.find(x => x.id === id);
+            const currIdx = STAGES.indexOf(p.stage);
+            if (currIdx < STAGES.length - 1) {
+                const note = prompt("Añadir reseña para el cambio de fase:");
+                p.stage = STAGES[currIdx + 1];
+                p.lastUpdate = Date.now();
+                if(note) p.history.unshift(note);
+                save();
+            }
+        }
+
+        function addNote(id) {
+            const p = db.find(x => x.id === id);
+            const note = prompt("Nueva reseña de seguimiento:");
+            if(note) {
+                p.history.unshift(note);
+                p.lastUpdate = Date.now();
+                save();
+            }
         }
 
         function save() {
-            localStorage.setItem('puebla_ejecutivo_v1', JSON.stringify(prospectos));
+            localStorage.setItem('puebla_pipeline_v2', JSON.stringify(db));
             render();
         }
 
-        function eliminar(id) {
-            if(confirm('¿Archivar prospecto?')) {
-                prospectos = prospectos.filter(p => p.id !== id);
+        function remove(id) {
+            if(confirm("¿Eliminar prospecto del pipeline?")) {
+                db = db.filter(x => x.id !== id);
                 save();
             }
         }
 
         function render() {
-            const container = document.getElementById('list-container');
-            document.getElementById('counter').innerText = prospectos.length.toString().padStart(2, '0');
-            container.innerHTML = '<h2 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-4">Pipeline Activo</h2>';
-            
-            prospectos.forEach(p => {
-                const dias = calculateDays(p.fecha_timestamp);
-                const esCritico = dias >= 3;
-                const badgeColor = p.interes === 'Alto' ? 'bg-red-500' : (p.interes === 'Medio' ? 'bg-amber-500' : 'bg-slate-400');
+            const list = document.getElementById('pipeline-list');
+            document.getElementById('main-counter').innerText = db.length;
+            list.innerHTML = "";
 
-                container.innerHTML += `
-                    <div class="executive-card p-6 ${esCritico ? 'card-alert' : ''}">
+            db.forEach(p => {
+                const dias = Math.floor((Date.now() - p.lastUpdate) / (1000*60*60*24));
+                let alertClass = "";
+                let alertMsg = "";
+
+                if (dias >= 5) {
+                    alertClass = "alert-critical";
+                    alertMsg = `<div class="text-[9px] font-black text-red-600 mb-2">⚠️ CRÍTICO: ${dias} DÍAS SIN SEGUIMIENTO</div>`;
+                } else if (dias >= 3) {
+                    alertClass = "alert-warm";
+                    alertMsg = `<div class="text-[9px] font-black text-amber-600 mb-2">⏳ ATENCIÓN: ${dias} DÍAS SIN ACTUALIZAR</div>`;
+                }
+
+                const nextStage = STAGES[STAGES.indexOf(p.stage) + 1];
+
+                list.innerHTML += `
+                    <div class="card-prospect p-6 shadow-xl shadow-slate-200/50 ${alertClass}">
+                        ${alertMsg}
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <h3 class="text-lg font-extrabold text-slate-800 leading-tight">${p.inst}</h3>
-                                <div class="flex items-center gap-2 mt-1 text-[10px] font-bold">
-                                    <span class="${badgeColor} text-white px-2 py-0.5 rounded-full">${p.interes}</span>
-                                    <span class="text-slate-400 uppercase italic">Hace ${dias} días</span>
+                                <h3 class="text-xl font-black text-slate-900">${p.inst}</h3>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="status-badge bg-indigo-100 text-indigo-700">${p.stage}</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">${p.rep}</span>
                                 </div>
                             </div>
-                            <button onclick="eliminar(${p.id})" class="text-slate-300 hover:text-rose-500 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
+                            <button onclick="remove(${p.id})" class="text-slate-300 hover:text-red-500 transition">✕</button>
+                        </div>
+
+                        <div class="flex gap-2 mb-4">
+                            <a href="tel:${p.tel}" class="bg-emerald-50 text-emerald-700 text-[10px] font-black px-3 py-2 rounded-xl flex-1 text-center">LLAMAR</a>
+                            <button onclick="addNote(${p.id})" class="bg-slate-100 text-slate-600 text-[10px] font-black px-3 py-2 rounded-xl flex-1 text-center">AÑADIR RESEÑA</button>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl mb-4 max-h-32 overflow-y-auto border border-slate-100">
+                            <p class="text-[9px] font-black text-slate-400 mb-2 uppercase tracking-tighter">Historial de Reseñas:</p>
+                            ${p.history.map(h => `<p class="text-[11px] text-slate-600 mb-2 border-b border-slate-200 pb-1 italic">"${h}"</p>`).join('')}
+                        </div>
+
+                        ${nextStage ? `
+                            <button onclick="upgrade(${p.id})" class="w-full bg-indigo-50 text-indigo-600 font-black py-3 rounded-xl text-[10px] tracking-widest hover:bg-indigo-600 hover:text-white transition-all">
+                                PASAR A ${nextStage.toUpperCase()} ➔
                             </button>
-                        </div>
-
-                        ${esCritico ? `
-                            <div class="mb-4 bg-rose-50 border border-rose-100 p-2 rounded-xl flex items-center gap-2">
-                                <span class="animate-bounce">⚠️</span>
-                                <span class="text-[10px] font-black text-rose-600 uppercase tracking-tighter">Atención: Requiere contacto inmediato</span>
+                        ` : `
+                            <div class="w-full bg-emerald-500 text-white font-black py-3 rounded-xl text-[10px] text-center tracking-widest">
+                                ¡LISTO PARA CONVERTIR EN CAMPAÑA!
                             </div>
-                        ` : ''}
-
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div class="text-xs">
-                                <p class="text-slate-400 font-bold uppercase text-[9px]">Enlace</p>
-                                <p class="font-bold text-slate-700">${p.rep}</p>
-                            </div>
-                            <div class="text-xs">
-                                <p class="text-slate-400 font-bold uppercase text-[9px]">Contacto</p>
-                                <a href="tel:${p.tel}" class="font-bold text-indigo-600 underline">${p.tel}</a>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 p-4 rounded-2xl">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase mb-1 italic">Últimos Acuerdos:</p>
-                            <p class="text-xs text-slate-600 leading-relaxed">${p.notas || 'Sin comentarios registrados.'}</p>
-                        </div>
+                        `}
                     </div>
                 `;
             });
